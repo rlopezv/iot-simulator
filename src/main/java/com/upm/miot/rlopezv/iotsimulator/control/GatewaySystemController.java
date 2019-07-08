@@ -61,7 +61,7 @@ public class GatewaySystemController extends AbstractSystemController {
 			@Override
 			public void onResponse(Response response) throws IOException {
 				String result = response.body().string();
-				LOGGER.error("message sent: {}" + result);
+				LOGGER.info("message sent: {}" + result);
 
 			}
 		});

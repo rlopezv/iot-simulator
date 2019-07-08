@@ -49,7 +49,7 @@ public class App {
 	}
 
 	public static void main(final String[] args) {
-		String configFile = "/Users/ramon/master/git/iot-simulator/etc/gatewaySystem.json";
+		String configFile = null;// "/Users/ramon/master/git/iot-simulator/etc/gatewaySystem.json";
 		LOGGER.info("Starting client");
 		if (configFile == null && (args == null || args.length == 0)) {
 			System.out.println("Usage: java -jar app.jar filename");
