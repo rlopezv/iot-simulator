@@ -1,0 +1,24 @@
+{
+	"systemId" : "res03sys03",
+	"implClassName": "com.upm.miot.rlopezv.iotsimulator.BaseSystemController",
+	"mqttConfig": 
+		{
+			"brokerUrl":"tcp://83.54.31.83:1883"
+		},
+				"additionalProperties" : {
+		},
+	"sensors" : [ 
+	{
+		"type":"temperature",
+		"maxValue": 30,
+		"minValue": 0
+	}
+	],
+	"actuators" : [ {
+		"type" : "valve",
+		"defaultValue": false
+	}
+		
+	] 
+	
+}

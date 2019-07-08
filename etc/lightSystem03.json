@@ -1,0 +1,29 @@
+{
+	"systemId" : "res03sys02",
+	"implClassName": "com.upm.miot.rlopezv.iotsimulator.control.BaseSystemController",
+	"mqttConfig": 
+		{
+			"brokerUrl":"tcp://83.54.31.83:1883"
+		},
+				"additionalProperties" : {
+		},
+	"sensors" : [ 
+	{
+		"type":"luminosity",
+		"maxValue": 100,
+		"minValue": 0
+	},
+	{
+		"type":"sound",
+		"maxValue": 70,
+		"minValue": 0
+	}
+	],
+	"actuators" : [ {
+		"type" : "light",
+		 "defaultValue" : true
+	}
+		
+	] 
+	
+}

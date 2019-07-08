@@ -1,0 +1,10 @@
+{
+	"implClassName": "com.upm.miot.rlopezv.iotsimulator.control.GatewaySystemController",
+	"mqttConfig": {
+		"brokerUrl": "tcp://192.168.1.72:1883"
+	},
+	"additionalProperties": {
+		"httpURL": "http://localhost:1880/data"
+	},
+	"sensors": []
+}
