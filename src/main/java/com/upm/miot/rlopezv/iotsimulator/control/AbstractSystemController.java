@@ -32,7 +32,7 @@ import com.upm.miot.rlopezv.iotsimulator.element.SrSystem;
  * @author ramon
  *
  */
-public abstract class AbstractSystemController implements MqttCallback, Runnable {
+public abstract class AbstractSystemController implements MqttCallback, Runnable, ISystemController {
 
 	private Logger LOGGER = LoggerFactory.getLogger(AbstractSystemController.class);
 
@@ -46,6 +46,10 @@ public abstract class AbstractSystemController implements MqttCallback, Runnable
 	public AbstractSystemController() {
 	}
 
+	/* (non-Javadoc)
+	 * @see com.upm.miot.rlopezv.iotsimulator.control.ISystemController#config(com.upm.miot.rlopezv.iotsimulator.config.SystemConfig)
+	 */
+	@Override
 	public void config(SystemConfig systemConfig) {
 		system = new SrSystem();
 		system.setId(systemConfig.getSystemId());
@@ -146,20 +150,36 @@ public abstract class AbstractSystemController implements MqttCallback, Runnable
 		handleMessage(new Message().topic(topic).mqttMessage(message));
 	}
 
+	/* (non-Javadoc)
+	 * @see com.upm.miot.rlopezv.iotsimulator.control.ISystemController#stop()
+	 */
+	@Override
 	public void stop() throws MqttException {
 		LOGGER.info("Stopping client");
 		this.exit = true;
 		this.getClient().disconnect();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.upm.miot.rlopezv.iotsimulator.control.ISystemController#isActive()
+	 */
+	@Override
 	public boolean isActive() {
 		return !exit;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.upm.miot.rlopezv.iotsimulator.control.ISystemController#getConfig()
+	 */
+	@Override
 	public Map<String, String> getConfig() {
 		return config;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.upm.miot.rlopezv.iotsimulator.control.ISystemController#setConfig(java.util.Map)
+	 */
+	@Override
 	public void setConfig(Map<String, String> config) {
 		this.config = config;
 	}
@@ -168,6 +188,9 @@ public abstract class AbstractSystemController implements MqttCallback, Runnable
 		return messageQueue.take();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.upm.miot.rlopezv.iotsimulator.control.ISystemController#run()
+	 */
 	@Override
 	public void run() {
 		// If necessary it configure external connections
@@ -233,6 +256,10 @@ public abstract class AbstractSystemController implements MqttCallback, Runnable
 		return system;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.upm.miot.rlopezv.iotsimulator.control.ISystemController#setSystem(com.upm.miot.rlopezv.iotsimulator.element.SrSystem)
+	 */
+	@Override
 	public void setSystem(SrSystem system) {
 		this.system = system;
 	}

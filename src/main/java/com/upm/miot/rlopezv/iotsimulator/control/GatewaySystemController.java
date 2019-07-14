@@ -15,6 +15,9 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.upm.miot.rlopezv.iotsimulator.AppConstants;
 import com.upm.miot.rlopezv.iotsimulator.data.Message;
+import com.upm.miot.rlopezv.iotsimulator.utils.JSONUtils;
+
+import okio.Buffer;
 
 /**
  *
@@ -36,35 +39,44 @@ public class GatewaySystemController extends AbstractSystemController {
 
 	@Override
 	protected void handleMessage(Message message) {
-		LOGGER.debug("Message recevied:{}", message);
-		message.getMqttMessage().getPayload();
-		MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-		String payload = new String(message.getMqttMessage().getPayload(), StandardCharsets.UTF_8);
-		RequestBody body = RequestBody.create(JSON, payload);
+		LOGGER.info("Message received:{}", message);
+		if (JSONUtils.isJSONValid(message.getMqttMessage().getPayload())) {
+			MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+			String payload = new String(message.getMqttMessage().getPayload(), StandardCharsets.UTF_8);
+			RequestBody body = RequestBody.create(JSON, payload);
 
-		OkHttpClient client = new OkHttpClient();
+			OkHttpClient client = new OkHttpClient();
 
-		Request request = new Request.Builder()
-				.url(httpURL)
-				.post(body)
-				.build();
+			Request request = new Request.Builder().url(httpURL).post(body).build();
 
-		Call call = client.newCall(request);
+			Call call = client.newCall(request);
 
-		call.enqueue(new Callback() {
-			@Override
-			public void onFailure(Request request, IOException e) {
+			call.enqueue(new Callback() {
+				@Override
+				public void onFailure(Request request, IOException e) {
+					String requestContent = null;
+					final Buffer buffer = new Buffer();
+					try {
+						request.body().writeTo(buffer);
+					} catch (IOException e1) {
+						LOGGER.warn("Could not process request body", e1);
+					}
+					requestContent = buffer.readUtf8();
+					LOGGER.error("onFailure() Request was:({}/{})", request.urlString(), request.method());
+					LOGGER.error("Content:{}", requestContent);
+					LOGGER.error("Error", e);
+				}
 
-				LOGGER.error("onFailure() Request was:{}", request, e);
-			}
+				@Override
+				public void onResponse(Response response) throws IOException {
+					String result = response.body().string();
+					LOGGER.info("message processed: {}", response.code(), result);
 
-			@Override
-			public void onResponse(Response response) throws IOException {
-				String result = response.body().string();
-				LOGGER.info("message sent: {}" + result);
-
-			}
-		});
+				}
+			});
+		} else {
+			LOGGER.warn("Discarded message {}", message);
+		}
 
 	}
 
